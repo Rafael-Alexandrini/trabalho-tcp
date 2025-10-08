@@ -74,7 +74,7 @@ Os três parâmetros são inteiros de 0 a 127.
 ### `texto_para_sequencia_midi(texto, bpm)`
 Retorna uma sequência MIDI (uma lista de mensagens MIDI com timestamp em segundos), criada através da decodificação do `texto` e `bpm` conforme a tabela.
 
-Exemplo:
+O exemplo abaixo instancia um DecodificadorMidi com instrumento padrão Bright Acoustic Piano (General MIDI #2), volume padrão 100 e mostra o resultado de traduzir 'CDE' (Dó Ré Mi) para uma sequência MIDI:
 ```python
 meu_decodificador = DecodificadorMidi(instrumento_padrao=1, volume_padrao=100)
 
