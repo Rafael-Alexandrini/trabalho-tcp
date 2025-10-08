@@ -1,27 +1,54 @@
-# Documentação 
+# Documentação CaptainMIDI
+## CaptainMIDI yeah 🤟
+CaptainMIDI permite criar e reproduzir músicas por meio de texto. 
 
+O usuário terá acesso a uma interface gráfica, na qual poderá digitar em uma caixa de texto, definir o número de batidas por minuto e apertar em botões Tocar para escutar a música e Parar para deixar de escutar a música. A transformação do texto em música segue o mapeamento apresentado na classe DecodificadorMidi.
 # Classes
-## JanelaPrincipal
+## SequenciaMidi
+Empacotamento de uma lista de mensagens MIDI e seus respectivos timestamps. 
+
+O seguinte exemplo mostra uma sequência de mensagens MIDI equivalentes a definir o instrumento como Bright Acoustic Piano (General MIDI #2) e tocar Dó Ré Mi, com velocity a 100 e BPM a 120.
+```python
+sequencia_midi = [[[192, 1, 0], 0], [[144, 60, 100], 0], [[128, 60, 100], 500.0], [[144, 62, 100], 500.0], [[128, 62, 100], 1000.0], [[144, 64, 100], 1000.0], [[128, 64, 100], 1500.0]]
+```
+### `SequenciaMidi()`
+Instancia uma nova SequenciaMidi vazia.
+
+
+### `get_lista_mensagens_midi()`
+Retorna a lista de mensagens MIDI e timestamps.
+
+### `anexar_mensagem_midi(mensagem_midi, timestamp)`
+Ao final da sequência de mensagens MIDI atual, adiciona uma nova mensagem MIDI e timestamp.
+`mensagem_midi` é uma lista de três elementos: um de status e dois de dados, conforme a especificação MIDI.
+`timestamp` é o tempo, em milisegundos, em que a mensagem será 'tocada' a partir da reprodução da sequência.
+
+### `anexar_varias_mensagens_midi(lista_msg_e_tempos)`
+Cada mensagem MIDI e timestamp são adicionados ao final da sequência.
+
+
 
 ## TocadorMidi
 
-Permite reproduzir e interromper sequências de mensagens MIDI.
+Permite tocar uma SequenciaMidi através da saída de MIDI padrão do computador e também parar essa reprodução.
 
 ### `TocadorMidi()`
 
 Instancia um novo TocadorMidi.
 
-### `tocar_sequencia_midi(sequencia_midi)`
+### `tocar_sequencia_midi(sequencia_midi, comando_final_seq=None)`
 
 Toca uma sequência de mensagens MIDI pelo output padrão de MIDI do computador.
 
-`sequencia_midi` é uma lista de mensagens MIDI com timestamp em segundos. 
+`sequencia_midi` é uma SequenciaMidi.
+`comando_final_seq` é uma função que será chamada quando a sequência MIDI terminar de ser executada, sem contar `parar_sequencia_midi()`.
 
-O exemplo abaixo instancia um TocadorMidi, cria e toca uma sequência MIDI, equivalente a definir o instrumento como Bright Acoustic Piano (General MIDI #2) e tocar Dó Ré Mi, a 120 BPM:
+O exemplo abaixo instancia um TocadorMidi, cria e toca uma SequenciaMidi, equivalente a definir o instrumento como Bright Acoustic Piano (General MIDI #2) e tocar Dó Ré Mi, a 120 BPM:
 ```python
 meu_tocador_midi = TocadorMidi()
 
-sequencia_midi = [[[192, 1, 0], 0], [[144, 60, 100], 0], [[128, 60, 100], 500.0], [[144, 62, 100], 500.0], [[128, 62, 100], 1000.0], [[144, 64, 100], 1000.0], [[128, 64, 100], 1500.0]]
+sequencia_midi = SequenciaMidi()
+sequencia_midi.anexar_varias_mensagens_midi([[[192, 1, 0], 0], [[144, 60, 100], 0], [[128, 60, 100], 500.0], [[144, 62, 100], 500.0], [[128, 62, 100], 1000.0], [[144, 64, 100], 1000.0], [[128, 64, 100], 1500.0]])
 
 meu_tocador_midi.tocar_sequencia_midi(sequencia_midi)
 ```
@@ -67,12 +94,12 @@ Os três parâmetros são inteiros de 0 a 127.
 
 `instrumento_padrao` corresponde ao instrumento do padrão GeneralMIDI com o qual a sequência MIDI vai iniciar. 
 
-`oitava_padrao` indica a nota que será considerada como o Dó Central no início da sequência MIDI. Deve-se passar múltiplos de 12 para corresponder ao Dó de cada oitava.
+`oitava_padrao` indica qual a oitava inicial. Valores inteiros de 0 a 8, sendo 4 o dó central. Obs.: algumas notas podem não emitir som se forem muito graves ou agúdas.
 
 `volume_padrao` indica a velocity inicial da sequência MIDI.
 
 ### `texto_para_sequencia_midi(texto, bpm)`
-Retorna uma sequência MIDI (uma lista de mensagens MIDI com timestamp em segundos), criada através da decodificação do `texto` e `bpm` conforme a tabela.
+Retorna uma SequenciaMidi, criada através da decodificação do `texto` e `bpm` conforme a tabela.
 
 O exemplo abaixo instancia um DecodificadorMidi com instrumento padrão Bright Acoustic Piano (General MIDI #2), volume padrão 100 e mostra o resultado de traduzir 'CDE' (Dó Ré Mi) para uma sequência MIDI:
 ```python
@@ -80,8 +107,33 @@ meu_decodificador = DecodificadorMidi(instrumento_padrao=1, volume_padrao=100)
 
 sequencia_midi = meu_decodificador.texto_para_sequencia_midi("CDE", 120)
 
-print(sequencia_midi)
+print(sequencia_midi.get_lista_mensagens_midi())
 
 // Output: 
 // [[[192, 1, 0], 0], [[144, 60, 100], 0], [[128, 60, 100], 500.0], [[144, 62, 100], 500.0], [[128, 62, 100], 1000.0], [[144, 64, 100], 1000.0], [[128, 64, 100], 1500.0]]
 ```
+### `get_instrumento_padrao()`
+### `get_oitava_padrao()`
+### `get_volume_padrao()`
+### `set_instrumento_padrao(codigo_instrumento)`
+### `set_oitava_padrao(oitava)`
+### `set_volume_padrao(velocity)`
+
+## JanelaPrincipal
+Interface gráfica com o usuário. 
+
+Quando instanciada, gera uma janela com entrada de texto, botões e texto e cria um TocadorMidi e um DecodificadorMidi
+### `JanelaPrincipal()`
+Instancia a JanelaPrincipal.
+### `iniciar()`
+Inicia o loop principal da interface.
+### `sair()`
+Encerra corretamente a interface e o TocadorMidi
+## EntryNumerico
+Componente de entrada de valores numéricos: possui campo para digitar e botões para incrementar ou decrementar.
+### `EntryNumerico()`
+Inicializa um EntryNumerico.
+### `get()`
+Retorna valor numérico.
+### `set(num)`
+Define o valor numérico como `num`.
