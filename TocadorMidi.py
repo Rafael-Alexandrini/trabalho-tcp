@@ -68,9 +68,7 @@ class TocadorMidi:
 
     def _inicia_saida_midi(self) -> None:
         pygame.midi.init()        
-        id_saida_midi_padrao = pygame.midi.get_default_output_id()
-        print("Saída:", id_saida_midi_padrao)
-        print(pygame.midi.get_device_info(id_saida_midi_padrao))
+        id_saida_midi_padrao = pygame.midi.get_default_output_id()   
         latencia_recomendada = 10
         self.saida_midi = pygame.midi.Output(id_saida_midi_padrao, latency=latencia_recomendada)
 
