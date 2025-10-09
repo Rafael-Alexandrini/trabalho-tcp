@@ -129,6 +129,21 @@ Instancia a JanelaPrincipal.
 Inicia o loop principal da interface.
 ### `sair()`
 Encerra corretamente a interface e o TocadorMidi
+
+### Métodos internos para responder à entrada do usuário:
+### `_botao_tocar_pressionado()`
+Chamado quando o botão Tocar é pressionado. Gera uma SequenciaMidi correspondente ao texto inserido pelo usuário através do DecodificadorMidi e o toca usando o TocadorMidi. Além disso, altera o botão Tocar para o botão Parar.
+
+### `_botao_parar_pressionado()`
+Chamado quando o botão Parar é pressionado. Interrompe a reprodução da música do TocadorMidi e troca o botão Parar pelo o botão Tocar.
+
+### `_musica_acabou()`
+Chamado quando a música termina de tocar naturalmente (botão Parar não é pressionado). Troca o botão Parar pelo botão Tocar.
+
+### `_texto_alterado()`
+Chamado quando o texto da caixa de entrada de texto é alterado. Se não há texto, bloqueia o botão Tocar. Se há texto, desbloqueia o botão Tocar.
+
+
 ## EntryNumerico
 Componente de entrada de valores numéricos: possui campo para digitar e botões para incrementar ou decrementar.
 ### `EntryNumerico()`
