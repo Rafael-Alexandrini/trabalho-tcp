@@ -36,6 +36,8 @@ Permite tocar uma SequenciaMidi através da saída de MIDI padrão do computador
 
 Instancia um novo TocadorMidi.
 
+Atenção : se não houver saída de MIDI padrão no computador, a exceção `pygame.midi.MidiException: 'Device id invalid, out of range.'` será lançada.
+
 ### `tocar_sequencia_midi(sequencia_midi, comando_final_seq=None)`
 
 Toca uma sequência de mensagens MIDI pelo output padrão de MIDI do computador.
@@ -56,6 +58,9 @@ meu_tocador_midi.tocar_sequencia_midi(sequencia_midi)
 ### `parar_sequencia_midi()`
 
 Para a reprodução da sequência MIDI
+
+### `sair()`
+Encerra corretamente o pygame.midi e a saída MIDI.
 
 ## DecodificadorMidi
 
