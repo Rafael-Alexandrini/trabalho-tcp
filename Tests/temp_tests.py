@@ -11,14 +11,14 @@ nova_seq_midi.anexar_varias_mensagens_midi(lista_midi)
 print(nova_seq_midi.get_lista_mensagens_midi())
 
 meu_tocador = TocadorMidi()
-meu_tocador.tocar_sequencia_midi(nova_seq_midi, comando_final_seq=meu_print)
+meu_tocador.tocar(nova_seq_midi, comando_fim_musica=meu_print)
 
 entrada = input("Digite algo: ")
 while entrada:
     if entrada == '0':
-        meu_tocador.parar_sequencia_midi()
+        meu_tocador.parar()
     elif entrada == '1':
-        meu_tocador.tocar_sequencia_midi(nova_seq_midi, meu_print)
+        meu_tocador.tocar(nova_seq_midi, meu_print)
     elif entrada == '2':
         meu_tocador.sair()
         break

@@ -1,13 +1,35 @@
+from typing import Union
+
 class SequenciaMidi:
     def __init__(self) -> None:
-        self.lista_midi = []
+        self._lista_midi = []
 
     def get_lista_mensagens_midi(self) -> list:
-        return self.lista_midi
+        return self._lista_midi
     
-    def anexar_mensagem_midi(self, mensagem_midi, timestamp) -> None:
-        self.lista_midi.append([mensagem_midi, timestamp])
+    def anexar_mensagem_midi(self, mensagem_midi : list[int], timestamp : float) -> None:
+        self._check_timestamp(timestamp)
+        self._lista_midi.append([mensagem_midi, timestamp])
 
-    def anexar_varias_mensagens_midi(self, lista_msg_e_tempos) -> None:
-        self.lista_midi.extend(lista_msg_e_tempos)
+    def anexar_varias_mensagens_midi(self, lista_msg_e_tempos : list[list]) -> None:
+        for mensagem in lista_msg_e_tempos:
+            self.anexar_mensagem_midi(mensagem[0], mensagem[1])
 
+    def get_tempo_fim_musica_ms(self) -> float:
+        if len(self._lista_midi) == 0:
+            return 0
+        
+        ultima_mensagem = self._lista_midi[-1]
+        return ultima_mensagem[1]
+
+    def get_tempo_fim_musica_s(self) -> float:
+        tempo_ms = self.get_tempo_fim_musica_ms()
+        MILISEGUNDOS_POR_SEGUNDO = 1000
+        return tempo_ms / MILISEGUNDOS_POR_SEGUNDO
+    
+    def _check_timestamp(self, timestamp : float):
+        if timestamp < 0:
+            raise ValueError("Timestamps devem ser positivos!")
+        if timestamp < self.get_tempo_fim_musica_ms():
+            raise ValueError("Timestamps devem estar em ordem!")
+    

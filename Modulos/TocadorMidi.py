@@ -5,40 +5,41 @@ import copy
 
 class TocadorMidi:
     def __init__(self) -> None:
-        self.reproduzindo = False
+        self._reproduzindo = False
         self._inicia_saida_midi()
 
-    def tocar_sequencia_midi(self, sequencia_midi : SequenciaMidi, comando_final_seq=None) -> None:
-        if self.reproduzindo is True:
+    def tocar(self, musica : SequenciaMidi, comando_fim_musica=None) -> None:
+        if self._reproduzindo is True:
             return
-        self.reproduzindo = True
+        self._reproduzindo = True
 
-        lista_midi = copy.deepcopy(sequencia_midi.get_lista_mensagens_midi())
-        
-        tempo_fim_musica = self._get_tempo_fim_da_musica(lista_midi)
+        sequencia_midi = copy.deepcopy(musica)
+
+        lista_midi = sequencia_midi.get_lista_mensagens_midi()
         
         lista_midi = self._ajustar_timestamp_lista_midi(lista_midi)
         
-        if comando_final_seq is not None:
-            timer_chamar_funcao = Timer(tempo_fim_musica, self._chama_func_fim_da_musica, args=[comando_final_seq])
+        tempo_fim_musica = sequencia_midi.get_tempo_fim_musica_s()
+        
+        if comando_fim_musica is not None:
+            timer_chamar_funcao = Timer(tempo_fim_musica, self._chama_func_fim_da_musica, args=[comando_fim_musica])
             timer_chamar_funcao.start()
 
         self.saida_midi.write(lista_midi)
 
-    def parar_sequencia_midi(self) -> None:
-        if self.reproduzindo is True:
-            self.saida_midi.abort()
-            del self.saida_midi
-            pygame.midi.quit()
+    def parar(self) -> None:
+        if self._reproduzindo is True:
+            self._sai_saida_midi()
 
-            self.reproduzindo = False
+            self._reproduzindo = False
 
             self._inicia_saida_midi()
 
     def sair(self) -> None:
-        self.saida_midi.abort()
-        del self.saida_midi
-        pygame.midi.quit()
+        self._sai_saida_midi()
+
+    def get_reproduzindo(self) -> bool:
+        return self._reproduzindo
 
     def _ajustar_timestamp_lista_midi(self, lista_midi : list) -> list:
         tempo_atual = pygame.midi.time()
@@ -47,23 +48,10 @@ class TocadorMidi:
             msg_e_time[1] += tempo_atual 
               
         return lista_midi
-        
-    def _get_tempo_fim_da_musica(self, lista_midi : list) -> int:
-        tempo_caso_de_erro = 0
-        if len(lista_midi) == 0:
-            return tempo_caso_de_erro
-        
-        ultima_mensagem = lista_midi[-1]
-
-        if len(ultima_mensagem) != 2:
-            return tempo_caso_de_erro
-        
-        tempo_ms = ultima_mensagem[1]
-        return tempo_ms / 1000
 
     def _chama_func_fim_da_musica(self, comando_final_seq) -> None:
-        if self.reproduzindo is True:
-            self.reproduzindo = False
+        if self._reproduzindo is True:
+            self._reproduzindo = False
             comando_final_seq()
 
     def _inicia_saida_midi(self) -> None:
@@ -72,3 +60,7 @@ class TocadorMidi:
         latencia_recomendada = 10
         self.saida_midi = pygame.midi.Output(id_saida_midi_padrao, latency=latencia_recomendada)
 
+    def _sai_saida_midi(self):
+        self.saida_midi.abort()
+        del self.saida_midi
+        pygame.midi.quit()
