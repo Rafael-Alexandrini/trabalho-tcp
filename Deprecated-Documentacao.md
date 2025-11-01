@@ -1,3 +1,6 @@
+# A documentação está desatualizada!
+Ainda pode ser usada como base para a criação das classes aqui descritas, mas para uso de classes já exisentes, informações podem estar desatualizadas!
+
 # Documentação CaptainMIDI
 ## CaptainMIDI yeah 🤟
 CaptainMIDI permite criar e reproduzir músicas por meio de texto. 
