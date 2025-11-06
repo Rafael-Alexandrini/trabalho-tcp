@@ -9,7 +9,7 @@ class DecodificadorMidi:
     def texto_para_sequencia_midi(self, texto : str, bpm : int) -> SequenciaMidi:
         self._sequencia = SequenciaMidi()
         self._timestamp_atual = 0
-        self._sequencia = self._mudar_instrumento(self._instrumento_padrao)
+        self._mudar_instrumento(self._instrumento_padrao)
         
         oitava_atual = self.get_oitava_padrao()
 

@@ -1,4 +1,4 @@
-from SequenciaMidi import SequenciaMidi
+from Modulos.SequenciaMidi import SequenciaMidi
 import pytest
 
 def test_anexar_mensagem_midi():
