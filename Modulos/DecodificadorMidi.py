@@ -1,12 +1,13 @@
-from SequenciaMidi import SequenciaMidi
+from Modulos.SequenciaMidi import SequenciaMidi
 
 class DecodificadorMidi:
-    def __init__(self, instrumento_padrao : int=14, oitava_padrao : int=4, volume_padrao : int=60) -> None:
+    def __init__(self, bpm_padrao : int=100, instrumento_padrao : int=14, oitava_padrao : int=4, volume_padrao : int=60) -> None:
         self._instrumento_padrao = instrumento_padrao
         self._oitava_padrao = oitava_padrao
         self._volume_padrao = volume_padrao
+        self._bpm_padrao = bpm_padrao
 
-    def texto_para_sequencia_midi(self, texto : str, bpm : int) -> SequenciaMidi:
+    def texto_para_sequencia_midi(self, texto : str) -> SequenciaMidi:
         self._sequencia = SequenciaMidi()
         self._timestamp_atual = 0
         self._mudar_instrumento(self._instrumento_padrao)
@@ -15,6 +16,12 @@ class DecodificadorMidi:
 
         return self._sequencia
     
+    def get_bpm_padrao(self) -> int:
+        return self._bpm_padrao
+   
+    def set_bpm_padrao(self, bpm : int) -> None:
+        self._bpm_padrao = bpm
+
     def get_instrumento_padrao(self) -> int:
         return self._instrumento_padrao
    

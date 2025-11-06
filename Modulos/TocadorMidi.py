@@ -1,5 +1,5 @@
 import pygame.midi
-from SequenciaMidi import SequenciaMidi
+from Modulos.SequenciaMidi import SequenciaMidi
 from threading import Timer
 import copy
 

@@ -15,10 +15,21 @@ class SequenciaMidi:
         for mensagem in lista_msg_e_tempos:
             self.anexar_mensagem_midi(mensagem[0], mensagem[1])
 
+    def ativar_nota(self, nota : int, velocity : int, timestamp : float) -> None:
+        ATIVAR_NOTA = 144
+        self.anexar_mensagem_midi([ATIVAR_NOTA, nota, velocity], timestamp)
+
+    def desativar_nota(self, nota : int, velocity : int, timestamp : float) -> None:
+        DESATIVAR_NOTA = 128
+        self.anexar_mensagem_midi([DESATIVAR_NOTA, nota, velocity], timestamp)
+
+    def mudar_instrumento(self, instrumento : int, timestamp : float) -> None:
+        MUDAR_INSTRUMENTO = 192
+        self.anexar_mensagem_midi([MUDAR_INSTRUMENTO, instrumento, 0], timestamp)
+
     def get_tempo_fim_musica_ms(self) -> float:
         if len(self._lista_midi) == 0:
             return 0
-        
         ultima_mensagem = self._lista_midi[-1]
         return ultima_mensagem[1]
 
