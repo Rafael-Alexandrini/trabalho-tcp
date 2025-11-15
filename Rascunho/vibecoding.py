@@ -23,24 +23,24 @@ def decoder(entrada: str, midi_output):
     oitava_atual = 60
     velocidade = 100
     eventos = [
-    # Mudar para o instrumento 20 no momento 'agora'
-        [[PROGRAM_CHANGE, 20, 0], agora]
+    # Mudar para o instrumento 1 no momento 'agora'
+        [[PROGRAM_CHANGE, 1, 0], agora]
     ]
     timestamp = agora
     for char in entrada:
         match char:
             case 'A':
-                eventos.append([[NOTE_ON, oitava_atual - 3, velocidade], timestamp])
+                eventos.append([[NOTE_ON, oitava_atual + 9, velocidade], timestamp])
                 timestamp += PAUSA_MS
-                eventos.append([[NOTE_OFF, oitava_atual - 3, velocidade], timestamp])
+                eventos.append([[NOTE_OFF, oitava_atual + 9, velocidade], timestamp])
             case 'H':
-                eventos.append([[NOTE_ON, oitava_atual - 2, velocidade], timestamp])
+                eventos.append([[NOTE_ON, oitava_atual + 10, velocidade], timestamp])
                 timestamp += PAUSA_MS
-                eventos.append([[NOTE_OFF, oitava_atual - 2, velocidade], timestamp])
+                eventos.append([[NOTE_OFF, oitava_atual + 10, velocidade], timestamp])
             case 'B':
-                eventos.append([[NOTE_ON, oitava_atual - 1, velocidade], timestamp])
+                eventos.append([[NOTE_ON, oitava_atual + 11, velocidade], timestamp])
                 timestamp += PAUSA_MS
-                eventos.append([[NOTE_OFF, oitava_atual - 1, velocidade], timestamp])
+                eventos.append([[NOTE_OFF, oitava_atual + 11, velocidade], timestamp])
             case 'C':
                 eventos.append([[NOTE_ON, oitava_atual - 0, velocidade], timestamp])
                 timestamp += PAUSA_MS
@@ -83,3 +83,6 @@ if __name__ == "__main__":
 # tema do tetris
 # EEBCDDCBAAACEEDCBBBCDDEECCAAAAaaaDDF.AA-GFEEECEEDCBBBCDDEECCAAAA
 # '-' não existe na especificação do professor, mas shhh, eu quero diminuir a oitava mais facilmente
+
+# -FA.FGAGFC-H.DA.C-AF-aaaFA.FGAGFC-H.DA.C-AFaaa
+# :)
