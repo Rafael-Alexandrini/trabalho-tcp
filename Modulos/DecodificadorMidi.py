@@ -15,7 +15,48 @@ class DecodificadorMidi:
         oitava = self.get_oitava_padrao()
         do_oitava = self._oitava_para_nota(self.get_oitava_padrao())
         volume = self.get_volume_padrao()
+        # talvez seja bom fazer essas variáveis serem da classe, não da função (poder levar pra uma função inicializa_sequencia())
         
+        """
+        while parser.hasNext()
+            token = parser.getNext()
+            if token.upper() in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']:
+                self._tocar_nota(token)
+            elif token == ' ' (espaço):
+                self._aumenta_volume()
+            elif token == 'OIT+':
+                self._aumenta_oitava()
+            elif token == 'OIT-':
+                self._diminui_oitava()
+            elif token.upper() in ['I', 'O', 'U']:
+                self._possivel_repeticao_como_nomear_isso()
+            elif token == '?':
+                self._tocar_aleatoria()
+            elif len(token) == 8 && token[0:4] == 'INST' && token[7] == \n:
+               # token é no formato INST123\n 
+               self._trocar_instrumento(int(token[4:7]))
+            elif token == 'BPM+':
+                self._aumenta_bpm()
+            elif token == 'BPM-':
+                self._diminui_bpm()
+            elif token == ';':
+                self._toca_pausa()
+            elif token == '.':
+                self._mantem_nota_ativa() # talvez precise mudar algumas coisas pra isso
+                # posso adicionar um jeito de remover a ultima mensagem midi de SequenciaMidi
+                # ou posso fazer que uma nota só é desligada na leitura do próximo token
+                # algo como, no final de cada loop, checa se a próxima token é '.' e se antes tocou uma nota
+                # o que confunde a ordem lógica das coisas
+                # ou fazer no inicio (se foi tocada uma nota e a próxima não é '.', terminar)
+            else: 
+                pass # não faz nada
+
+
+                
+
+                
+
+        """
 
 
 
