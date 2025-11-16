@@ -8,40 +8,73 @@ class DecodificadorMidi:
         self._bpm_padrao = bpm_padrao
 
     def texto_para_sequencia_midi(self, texto : str) -> SequenciaMidi:
-        self._sequencia = SequenciaMidi()
-        self._timestamp_atual = 0
-        self._mudar_instrumento(self._instrumento_padrao)
+        sequencia = SequenciaMidi()
+        timestamp = 0
+        intervalo = self._bpm_para_intervalo_ms(self.get_bpm_padrao())
+        sequencia.mudar_instrumento(self.get_instrumento_padrao(), timestamp)
+        oitava = self.get_oitava_padrao()
+        do_oitava = self._oitava_para_nota(self.get_oitava_padrao())
+        volume = self.get_volume_padrao()
         
-        oitava_atual = self.get_oitava_padrao()
 
-        return self._sequencia
+
+
+
+        
+        return sequencia
     
     def get_bpm_padrao(self) -> int:
         return self._bpm_padrao
    
-    def set_bpm_padrao(self, bpm : int) -> None:
-        self._bpm_padrao = bpm
+    def set_bpm_padrao(self, bpm : int) -> None: 
+        BPM_MINIMO = 40
+        BPM_MAXIMO = 240
+        if BPM_MINIMO <= bpm and bpm <= BPM_MAXIMO:
+            self._bpm_padrao = bpm
+        else:
+            raise ValueError(f"BPM deve estar entre {BPM_MINIMO} e {BPM_MAXIMO}.")
 
     def get_instrumento_padrao(self) -> int:
         return self._instrumento_padrao
    
     def set_instrumento_padrao(self, instrumento : int) -> None:
-        self._instrumento_padrao = instrumento
+        INST_MINIMO = 0
+        INST_MAXIMO = 127
+        if INST_MINIMO <= instrumento and instrumento <= INST_MAXIMO:
+            self._instrumento_padrao = instrumento
+        else:
+            raise ValueError(f"Instrumento deve estar entre {INST_MINIMO} e {INST_MAXIMO}.")
+        
 
     def get_oitava_padrao(self) -> int:
         return self._oitava_padrao
     
     def set_oitava_padrao(self, oitava : int) -> None:
-        self._oitava_padrao = oitava
+        OITAVA_MINIMA = 0
+        OITAVA_MAXIMA = 8
+        if OITAVA_MINIMA <= oitava and oitava <= OITAVA_MAXIMA:
+            self._oitava_padrao = oitava
+        else:
+            raise ValueError(f"Oitava deve estar entre {OITAVA_MINIMA} e {OITAVA_MAXIMA}.")
 
     def get_volume_padrao(self) -> int:
         return self._volume_padrao
     
     def set_volume_padrao(self, volume : int) -> None:
-        self._volume_padrao = volume
+        VOL_MINIMO = 0
+        VOL_MAXIMO = 127
+        if VOL_MINIMO <= volume and volume <= VOL_MAXIMO:
+            self._volume_padrao = volume
+        else:
+            raise ValueError(f"Volume deve estar entre {VOL_MINIMO} e {VOL_MAXIMO}.")
+        
     
-    def _mudar_instrumento(self, instrumento : int) -> None:
-        MUDANCA_INSTRUMENTO = 192
-        self._sequencia.anexar_mensagem_midi([MUDANCA_INSTRUMENTO, instrumento, 0], 0)
-    
+    def _oitava_para_nota(self, oitava : int) -> int:
+        return oitava * 12 + 12
+
+    def _bpm_para_intervalo_ms(self, bpm : int) -> float:
+        if bpm <= 0:
+            raise ValueError("BPM não deve ser zero ou negativo!")
+        # retorna intervalo entre batidas em milissegundos
+        return 60 * 1000 / bpm
     

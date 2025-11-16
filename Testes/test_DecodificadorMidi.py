@@ -287,3 +287,39 @@ def test_outro_char(decodificador_base):
     sequencia_esperada.ativar_nota(do_oitava, volume, 0)
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms)
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()
+
+def test_set_oitava_invalida(decodificador_base):
+    decoder, bpm, inst, oitava, volume = decodificador_base
+    oitava_nova = 100
+    with pytest.raises(ValueError):
+        decoder.set_oitava_padrao(oitava_nova)
+        
+def test_set_bpm_invalido(decodificador_base):
+    decoder, bpm, inst, oitava, volume = decodificador_base
+    bpm_novo = 0
+    with pytest.raises(ValueError):
+        decoder.set_bpm_padrao(bpm_novo)
+
+def test_set_instrumento_invalido_menor(decodificador_base):
+    decoder, bpm, inst, oitava, volume = decodificador_base
+    inst_novo = -1
+    with pytest.raises(ValueError):
+        decoder.set_instrumento_padrao(inst_novo)
+
+def test_set_instrumento_invalido_limite(decodificador_base):
+    decoder, bpm, inst, oitava, volume = decodificador_base
+    inst_novo = 128
+    with pytest.raises(ValueError):
+        decoder.set_instrumento_padrao(inst_novo)
+        
+def test_set_volume_invalido_menor(decodificador_base):
+    decoder, bpm, inst, oitava, volume = decodificador_base
+    vol_novo = -1
+    with pytest.raises(ValueError):
+        decoder.set_volume_padrao(vol_novo)
+
+def test_set_volume_invalido_limite(decodificador_base):
+    decoder, bpm, inst, oitava, volume = decodificador_base
+    vol_novo = 128
+    with pytest.raises(ValueError):
+        decoder.set_volume_padrao(vol_novo)
