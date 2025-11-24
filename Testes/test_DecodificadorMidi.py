@@ -263,7 +263,7 @@ def test_ponto_e_virgula(decodificador_base):
     sequencia_esperada.ativar_nota(do_oitava, volume, intervalo_ms*2)
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms*3)
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()
-
+"""
 def test_ponto(decodificador_base):
     decoder, bpm, inst, oitava, volume = decodificador_base
     intervalo_ms = 60 * 1000 / bpm
@@ -276,7 +276,7 @@ def test_ponto(decodificador_base):
     # dois pontos: intervalo_ms*2 até intervalo_ms*3
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms*3)
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()
-
+"""
 def test_outro_char(decodificador_base):
     decoder, bpm, inst, oitava, volume = decodificador_base
     intervalo_ms = 60 * 1000 / bpm

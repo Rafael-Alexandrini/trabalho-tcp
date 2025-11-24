@@ -1,4 +1,5 @@
 from Modulos.SequenciaMidi import SequenciaMidi
+from random import choice 
 
 class DecodificadorMidi:
     def __init__(self, bpm_padrao : int=100, instrumento_padrao : int=14, oitava_padrao : int=4, volume_padrao : int=60) -> None:
@@ -8,62 +9,49 @@ class DecodificadorMidi:
         self._bpm_padrao = bpm_padrao
 
     def texto_para_sequencia_midi(self, texto : str) -> SequenciaMidi:
-        sequencia = SequenciaMidi()
-        timestamp = 0
-        intervalo = self._bpm_para_intervalo_ms(self.get_bpm_padrao())
-        sequencia.mudar_instrumento(self.get_instrumento_padrao(), timestamp)
-        oitava = self.get_oitava_padrao()
-        do_oitava = self._oitava_para_nota(self.get_oitava_padrao())
-        volume = self.get_volume_padrao()
-        # talvez seja bom fazer essas variáveis serem da classe, não da função (poder levar pra uma função inicializa_sequencia())
+        self._sequencia = SequenciaMidi()
+        self._timestamp = 0
+        self._set_bpm(self.get_bpm_padrao())
+        self._instrumento_atual = self.get_instrumento_padrao()
+        self._trocar_instrumento(self._instrumento_atual)
+        self._set_oitava(self.get_oitava_padrao())
+        self._volume = self.get_volume_padrao()
+        self._registra_ultimo_token('000\n')
         
-        """
-        while parser.hasNext()
-            token = parser.getNext()
-            if token.upper() in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']:
+        
+        """ LÓGICA DO DECODIFICADOR
+            COLOCAR PARSER AQUI"""
+        parser = True # só pro vscode não incomodar
+        while parser:   # enquanto houver
+            token = "teste" # pedaço de string a ser comparado
+            if self._is_nota(token):
                 self._tocar_nota(token)
-            elif token == ' ' (espaço):
+            elif token == ' ': #(espaço)
                 self._aumenta_volume()
             elif token == 'OIT+':
                 self._aumenta_oitava()
             elif token == 'OIT-':
                 self._diminui_oitava()
-            elif token.upper() in ['I', 'O', 'U']:
-                self._possivel_repeticao_como_nomear_isso()
+            elif self._is_repete_ou_telefone(token):
+                self._repete_nota_ou_telefone()
             elif token == '?':
                 self._tocar_aleatoria()
-            elif len(token) == 8 && token[0:4] == 'INST' && token[7] == \n:
-               # token é no formato INST123\n 
-               self._trocar_instrumento(int(token[4:7]))
+            elif self._is_token_troca_inst(token):
+               # token é no formato 123\n 
+               self._trocar_instrumento(int(token[0:2]))
             elif token == 'BPM+':
                 self._aumenta_bpm()
             elif token == 'BPM-':
                 self._diminui_bpm()
             elif token == ';':
-                self._toca_pausa()
-            elif token == '.':
-                self._mantem_nota_ativa() # talvez precise mudar algumas coisas pra isso
-                # posso adicionar um jeito de remover a ultima mensagem midi de SequenciaMidi
-                # ou posso fazer que uma nota só é desligada na leitura do próximo token
-                # algo como, no final de cada loop, checa se a próxima token é '.' e se antes tocou uma nota
-                # o que confunde a ordem lógica das coisas
-                # ou fazer no inicio (se foi tocada uma nota e a próxima não é '.', terminar)
+                self._tocar_pausa()
             else: 
-                pass # não faz nada
+                pass # outros chars são ignorados
+            self._registra_ultimo_token(token)
 
+        return self._sequencia
 
-                
-
-                
-
-        """
-
-
-
-
-        
-        return sequencia
-    
+   
     def get_bpm_padrao(self) -> int:
         return self._bpm_padrao
    
@@ -109,6 +97,7 @@ class DecodificadorMidi:
         else:
             raise ValueError(f"Volume deve estar entre {VOL_MINIMO} e {VOL_MAXIMO}.")
         
+    # FUNÇÕES AUXILIARES PARA A DECODIFICAÇÃO
     
     def _oitava_para_nota(self, oitava : int) -> int:
         return oitava * 12 + 12
@@ -118,4 +107,109 @@ class DecodificadorMidi:
             raise ValueError("BPM não deve ser zero ou negativo!")
         # retorna intervalo entre batidas em milissegundos
         return 60 * 1000 / bpm
+
+    def _incrementa_timestamp(self):
+        self._timestamp += self._intervalo
+        
+    def _tocar_nota(self, token : str) -> None:
+        token_maiusculo = token.upper()
+        offset_nota = {
+            'C': 0,  
+            'D': 2,
+            'E': 4,
+            'F': 5,
+            'G': 7,
+            'A': 9,
+            'H': 10,
+            'B': 11,
+            }
+        nota = self._do_oitava + offset_nota[token_maiusculo]
+        self._sequencia.ativar_nota(nota, self._volume, self._timestamp)
+        self._incrementa_timestamp()
+        self._sequencia.desativar_nota(nota, self._volume, self._timestamp)
+
+    def _aumenta_volume(self) -> None:
+        AUMENTO_VELOCITY = 20
+        LIMITE_VELOCITY = 127
+        self._volume += AUMENTO_VELOCITY 
+        if self._volume > LIMITE_VELOCITY:
+            self._volume_padrao = LIMITE_VELOCITY
+
+    def _set_oitava(self, oitava : int) -> None:
+        MINIMO_OITAVA = 0
+        MAXIMO_OITAVA = 8
+        oitava_nova = oitava
+        if oitava_nova < MINIMO_OITAVA:
+           oitava_nova = MINIMO_OITAVA
+        elif oitava_nova > MAXIMO_OITAVA:
+            oitava_nova = MAXIMO_OITAVA
+        self._oitava = oitava_nova
+        self._do_oitava = self._oitava_para_nota(oitava_nova)
+
+    def _aumenta_oitava(self) -> None:
+        self._set_oitava(self._oitava + 1)
+
+    def _diminui_oitava(self) -> None:
+        self._set_oitava(self._oitava - 1)
+
+    def _set_bpm(self, bpm : int) -> None:
+        MINIMO_BPM = 40
+        MAXIMO_BPM = 240
+        bpm_novo = bpm
+        if bpm_novo < MINIMO_BPM:
+           bpm_novo = MINIMO_BPM
+        elif bpm_novo > MAXIMO_BPM:
+            bpm_novo = MAXIMO_BPM
+        self._bpm = bpm_novo
+        self._intervalo = self._bpm_para_intervalo_ms(bpm_novo)
     
+    def _aumenta_bpm(self) -> None:
+        AUMENTO_BPM = 20
+        self._set_bpm(self._bpm + AUMENTO_BPM)
+    
+    def _diminui_bpm(self) -> None:
+        DECREMENTO_BPM = 20
+        self._set_bpm(self._bpm - DECREMENTO_BPM)
+
+    def _tocar_pausa(self) -> None:
+        self._timestamp += self._intervalo
+    
+    def _trocar_instrumento(self, inst : int) -> None:
+        self._instrumento_atual = inst
+        self._sequencia.mudar_instrumento(inst, self._timestamp)
+
+    def _is_token_troca_inst(self, token : str) -> bool:
+        # formato 123\n
+        MAXIMO_INSTRUMENTO = 127
+        MINIMO_INSTRUMENTO = 0
+        return len(token) == 4 and token[3] == '\n' \
+            and int(token[0:2]) >= MINIMO_INSTRUMENTO and int(token[0:2]) <= MAXIMO_INSTRUMENTO
+    
+    def _is_repete_ou_telefone(self, token : str) -> bool:
+        return token.upper() in ['I', 'O', 'U']
+
+    def _is_nota(self, token : str) -> bool:
+        return token.upper() in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+
+    def _registra_ultimo_token(self, token : str) -> None:
+        if self._is_nota(token) or token == '?':
+            self._ultimo_token_eh_nota = True
+            self._ultima_nota = token
+        elif self._is_repete_ou_telefone(token) and self._ultimo_token_eh_nota:
+            self._ultimo_token_eh_nota = True
+        else:
+            self._ultimo_token_eh_nota = False
+
+    def _repete_nota_ou_telefone(self) -> None:
+        INST_TELEFONE = 124
+        if self._ultimo_token_eh_nota:
+            self._tocar_nota(self._ultima_nota)
+        else:
+            instrumento_atual = self._instrumento_atual
+            self._trocar_instrumento(INST_TELEFONE)
+            self._tocar_nota('C')
+            self._trocar_instrumento(instrumento_atual)
+    
+    def _tocar_aleatoria(self) -> None:
+        nota_aleatoria = choice(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])
+        self._tocar_nota(nota_aleatoria)
