@@ -19,34 +19,36 @@ class DecodificadorMidi:
         self._registra_ultimo_token('000\n')
         
         
-        """ LÓGICA DO DECODIFICADOR
-            COLOCAR PARSER AQUI"""
-        parser = True # só pro vscode não incomodar
-        while parser:   # enquanto houver
-            token = "teste" # pedaço de string a ser comparado
+        parser = texto 
+        i = 0
+        while i < len(texto):   # enquanto houver elementos na lista
+            token = parser[i]
             if self._is_nota(token):
                 self._tocar_nota(token)
             elif token == ' ': #(espaço)
                 self._aumenta_volume()
-            elif token == 'OIT+':
-                self._aumenta_oitava()
-            elif token == 'OIT-':
-                self._diminui_oitava()
-            elif self._is_repete_ou_telefone(token):
-                self._repete_nota_ou_telefone()
             elif token == '?':
                 self._tocar_aleatoria()
-            elif self._is_token_troca_inst(token):
-               # token é no formato 123\n 
-               self._trocar_instrumento(int(token[0:2]))
-            elif token == 'BPM+':
-                self._aumenta_bpm()
-            elif token == 'BPM-':
-                self._diminui_bpm()
+            elif self._is_repete_ou_telefone(token):
+                self._repete_nota_ou_telefone()
             elif token == ';':
                 self._tocar_pausa()
-            else: 
-                pass # outros chars são ignorados
+            else:
+                token = parser[i:4]
+                if token == 'OIT+':
+                    self._aumenta_oitava()
+                elif token == 'OIT-':
+                    self._diminui_oitava()
+                elif token == 'BPM+':
+                    self._aumenta_bpm()
+                elif token == 'BPM-':
+                    self._diminui_bpm()
+                elif self._is_token_troca_inst(token):
+                # token é no formato 123\n 
+                    self._trocar_instrumento(int(token[0:2]))
+                i+=3
+            i+=1
+
             self._registra_ultimo_token(token)
 
         return self._sequencia
