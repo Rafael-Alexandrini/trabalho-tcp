@@ -142,7 +142,7 @@ def test_diminui_oitava_limite(decodificador_base):
     decoder.set_oitava_padrao(oitava_teste)
     do_oitava = 12 * oitava_teste + 12
     do_oitava_decrementado = do_oitava
-    sequencia_saida = decoder.texto_para_sequencia_midi("OIT+C")
+    sequencia_saida = decoder.texto_para_sequencia_midi("OIT-C")
     sequencia_esperada = SequenciaMidi()
     sequencia_esperada.mudar_instrumento(inst, 0)
     sequencia_esperada.ativar_nota(do_oitava_decrementado, volume, 0)
@@ -173,11 +173,11 @@ def test_vogal_nao_repete(decodificador_base):
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms)
     volume_aumentado = clamp(volume + 20, 0, 127) # espaço aumenta volume, aqui só pra não ser uma nota
     # char anterior não é nota, então toca telefone
-    sequencia_esperada.mudar_instrumento(124, 0)
+    sequencia_esperada.mudar_instrumento(124, intervalo_ms)
     sequencia_esperada.ativar_nota(62, volume_aumentado, intervalo_ms)
     sequencia_esperada.desativar_nota(62, volume_aumentado, intervalo_ms*2)
     # tem que trocar o instrumento de volta
-    sequencia_esperada.mudar_instrumento(inst, 0)
+    sequencia_esperada.mudar_instrumento(inst, intervalo_ms*2)
     sequencia_esperada.ativar_nota(do_oitava, volume_aumentado, intervalo_ms*3) 
     sequencia_esperada.desativar_nota(do_oitava, volume_aumentado, intervalo_ms*4)
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()
@@ -188,14 +188,16 @@ def test_nova_linha(decodificador_base):
     decoder, bpm, inst, oitava, volume = decodificador_base
     intervalo_ms = 60 * 1000 / bpm
     do_oitava = 12 * oitava + 12
-    sequencia_saida = decoder.texto_para_sequencia_midi("C\n020C")
+    sequencia_saida = decoder.texto_para_sequencia_midi("C020\nC")
     sequencia_esperada = SequenciaMidi()
     sequencia_esperada.mudar_instrumento(inst, 0)
     sequencia_esperada.ativar_nota(do_oitava, volume, 0)
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms)
-    sequencia_esperada.mudar_instrumento(20, 0)
+    sequencia_esperada.mudar_instrumento(20, intervalo_ms)
     sequencia_esperada.ativar_nota(do_oitava, volume, intervalo_ms*2)
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms*3)
+    #print("Esperada", sequencia_esperada.get_lista_mensagens_midi())
+    #print("Retornada", sequencia_saida.get_lista_mensagens_midi())
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()
 
 def test_bpm_mais(decodificador_base):

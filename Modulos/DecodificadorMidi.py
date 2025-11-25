@@ -132,10 +132,18 @@ class DecodificadorMidi:
 
     def _aumenta_volume(self) -> None:
         AUMENTO_VELOCITY = 20
-        LIMITE_VELOCITY = 127
-        self._volume += AUMENTO_VELOCITY 
-        if self._volume > LIMITE_VELOCITY:
-            self._volume_padrao = LIMITE_VELOCITY
+        self._set_volume(self._volume + AUMENTO_VELOCITY)
+
+
+    def _set_volume(self, volume : int) -> None:
+        MINIMO_VELOCITY = 0
+        MAXIMO_VELOCITY = 127
+        volume_novo = volume
+        if volume_novo < MINIMO_VELOCITY:
+           volume_novo = MINIMO_VELOCITY
+        elif volume_novo > MAXIMO_VELOCITY:
+            volume_novo = MAXIMO_VELOCITY
+        self._volume = volume_novo
 
     def _set_oitava(self, oitava : int) -> None:
         MINIMO_OITAVA = 0
