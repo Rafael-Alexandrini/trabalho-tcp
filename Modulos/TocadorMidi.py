@@ -15,15 +15,15 @@ class TocadorMidi:
 
         sequencia_midi = copy.deepcopy(musica)
 
-        lista_midi = sequencia_midi.get_lista_mensagens_midi()
+        lista_midi = copy.deepcopy(sequencia_midi.get_lista_mensagens_midi())
         
         lista_midi = self._ajustar_timestamp_lista_midi(lista_midi)
         
         tempo_fim_musica = sequencia_midi.get_tempo_fim_musica_s()
         
-        if comando_fim_musica is not None:
-            timer_chamar_funcao = Timer(tempo_fim_musica, self._chama_func_fim_da_musica, args=[comando_fim_musica])
-            timer_chamar_funcao.start()
+        
+        timer_chamar_funcao = Timer(tempo_fim_musica, self._chama_func_fim_da_musica, args=[comando_fim_musica])
+        timer_chamar_funcao.start()
 
         self.saida_midi.write(lista_midi)
 
@@ -52,7 +52,8 @@ class TocadorMidi:
     def _chama_func_fim_da_musica(self, comando_final_seq) -> None:
         if self._reproduzindo is True:
             self._reproduzindo = False
-            comando_final_seq()
+            if comando_final_seq is not None:
+                comando_final_seq()
 
     def _inicia_saida_midi(self) -> None:
         pygame.midi.init()        
