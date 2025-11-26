@@ -37,16 +37,20 @@ class DecodificadorMidi:
                 token = parser[i:4]
                 if token == 'OIT+':
                     self._aumenta_oitava()
+                    i+=3
                 elif token == 'OIT-':
                     self._diminui_oitava()
+                    i+=3
                 elif token == 'BPM+':
                     self._aumenta_bpm()
+                    i+=3
                 elif token == 'BPM-':
                     self._diminui_bpm()
+                    i+=3
                 elif self._is_token_troca_inst(token):
                 # token é no formato 123\n 
                     self._trocar_instrumento(int(token[0:2]))
-                i+=3
+                    i+=3
             i+=1
 
             self._registra_ultimo_token(token)
