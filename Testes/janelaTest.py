@@ -1,4 +1,4 @@
-from Janela import Janela
+from Modulos.Janela import Janela
 
 jp = Janela("Captain MIDI", (10, 10, 10, 10))
 text = jp.create_text_widget(50, 10, "C D E F G A B", 2, 1, "we")
