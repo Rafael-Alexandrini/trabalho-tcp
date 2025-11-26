@@ -178,8 +178,8 @@ def test_vogal_nao_repete(decodificador_base):
     sequencia_esperada.desativar_nota(62, volume_aumentado, intervalo_ms*2)
     # tem que trocar o instrumento de volta
     sequencia_esperada.mudar_instrumento(inst, intervalo_ms*2)
-    sequencia_esperada.ativar_nota(do_oitava, volume_aumentado, intervalo_ms*3) 
-    sequencia_esperada.desativar_nota(do_oitava, volume_aumentado, intervalo_ms*4)
+    sequencia_esperada.ativar_nota(do_oitava, volume_aumentado, intervalo_ms*2) 
+    sequencia_esperada.desativar_nota(do_oitava, volume_aumentado, intervalo_ms*3)
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()
 
 def test_nova_linha(decodificador_base):
@@ -194,8 +194,8 @@ def test_nova_linha(decodificador_base):
     sequencia_esperada.ativar_nota(do_oitava, volume, 0)
     sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms)
     sequencia_esperada.mudar_instrumento(20, intervalo_ms)
-    sequencia_esperada.ativar_nota(do_oitava, volume, intervalo_ms*2)
-    sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms*3)
+    sequencia_esperada.ativar_nota(do_oitava, volume, intervalo_ms*1)
+    sequencia_esperada.desativar_nota(do_oitava, volume, intervalo_ms*2)
     #print("Esperada", sequencia_esperada.get_lista_mensagens_midi())
     #print("Retornada", sequencia_saida.get_lista_mensagens_midi())
     assert sequencia_saida.get_lista_mensagens_midi() == sequencia_esperada.get_lista_mensagens_midi()

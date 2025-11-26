@@ -22,35 +22,36 @@ class DecodificadorMidi:
         parser = texto 
         i = 0
         while i < len(texto):   # enquanto houver elementos na lista
-            token = parser[i]
-            if self._is_nota(token):
-                self._tocar_nota(token)
-            elif token == ' ': #(espaço)
-                self._aumenta_volume()
-            elif token == '?':
-                self._tocar_aleatoria()
-            elif self._is_repete_ou_telefone(token):
-                self._repete_nota_ou_telefone()
-            elif token == ';':
-                self._tocar_pausa()
+            token = parser[i:i+4]
+            if token == 'OIT+':
+                self._aumenta_oitava()
+                i+=3
+            elif token == 'OIT-':
+                self._diminui_oitava()
+                i+=3
+            elif token == 'BPM+':
+                self._aumenta_bpm()
+                i+=3
+            elif token == 'BPM-':
+                self._diminui_bpm()
+                i+=3
+            elif self._is_token_troca_inst(token):
+            # token é no formato 123\n 
+                self._trocar_instrumento(int(token[0:3]))
+                i+=3
             else:
-                token = parser[i:i+4]
-                if token == 'OIT+':
-                    self._aumenta_oitava()
-                    i+=3
-                elif token == 'OIT-':
-                    self._diminui_oitava()
-                    i+=3
-                elif token == 'BPM+':
-                    self._aumenta_bpm()
-                    i+=3
-                elif token == 'BPM-':
-                    self._diminui_bpm()
-                    i+=3
-                elif self._is_token_troca_inst(token):
-                # token é no formato 123\n 
-                    self._trocar_instrumento(int(token[0:3]))
-                    i+=3
+                token = parser[i]
+                if self._is_nota(token):
+                    self._tocar_nota(token)
+                elif token == ' ': #(espaço)
+                    self._aumenta_volume()
+                elif token == '?':
+                    self._tocar_aleatoria()
+                elif self._is_repete_ou_telefone(token):
+                    self._repete_nota_ou_telefone()
+                elif token == ';':
+                    self._tocar_pausa()
+           
             i+=1
 
             self._registra_ultimo_token(token)
@@ -216,12 +217,13 @@ class DecodificadorMidi:
 
     def _repete_nota_ou_telefone(self) -> None:
         INST_TELEFONE = 124
+        NOTA_TELEFONE = 'D'
         if self._ultimo_token_eh_nota:
             self._tocar_nota(self._ultima_nota)
         else:
             instrumento_atual = self._instrumento_atual
             self._trocar_instrumento(INST_TELEFONE)
-            self._tocar_nota('C')
+            self._tocar_nota(NOTA_TELEFONE)
             self._trocar_instrumento(instrumento_atual)
     
     def _tocar_aleatoria(self) -> None:
