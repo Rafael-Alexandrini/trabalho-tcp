@@ -198,6 +198,7 @@ class DecodificadorMidi:
         MAXIMO_INSTRUMENTO = 127
         MINIMO_INSTRUMENTO = 0
         return len(token) == 4 and token[3] == '\n' \
+            and token[0:2].isnumeric() \
             and int(token[0:2]) >= MINIMO_INSTRUMENTO and int(token[0:2]) <= MAXIMO_INSTRUMENTO
     
     def _is_repete_ou_telefone(self, token : str) -> bool:
