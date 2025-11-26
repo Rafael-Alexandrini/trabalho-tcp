@@ -34,7 +34,7 @@ class DecodificadorMidi:
             elif token == ';':
                 self._tocar_pausa()
             else:
-                token = parser[i:4]
+                token = parser[i:i+4]
                 if token == 'OIT+':
                     self._aumenta_oitava()
                     i+=3
@@ -49,7 +49,7 @@ class DecodificadorMidi:
                     i+=3
                 elif self._is_token_troca_inst(token):
                 # token é no formato 123\n 
-                    self._trocar_instrumento(int(token[0:2]))
+                    self._trocar_instrumento(int(token[0:3]))
                     i+=3
             i+=1
 
