@@ -22,15 +22,15 @@ class TocadorMidi:
         tempo_fim_musica = sequencia_midi.get_tempo_fim_musica_s()
         
         
-        timer_chamar_funcao = Timer(tempo_fim_musica, self._chama_func_fim_da_musica, args=[comando_fim_musica])
-        timer_chamar_funcao.start()
+        self.timer_chamar_funcao = Timer(tempo_fim_musica, self._chama_func_fim_da_musica, args=[comando_fim_musica])
+        self.timer_chamar_funcao.start()
 
         self.saida_midi.write(lista_midi)
 
     def parar(self) -> None:
         if self._reproduzindo is True:
             self._sai_saida_midi()
-
+            self.timer_chamar_funcao.cancel()
             self._reproduzindo = False
 
             self._inicia_saida_midi()
@@ -51,6 +51,7 @@ class TocadorMidi:
 
     def _chama_func_fim_da_musica(self, comando_final_seq) -> None:
         if self._reproduzindo is True:
+            self.parar()
             self._reproduzindo = False
             if comando_final_seq is not None:
                 comando_final_seq()

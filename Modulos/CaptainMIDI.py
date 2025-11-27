@@ -3,7 +3,7 @@ from TocadorMidi import TocadorMidi
 from DecodificadorMidi import DecodificadorMidi
 
 def play():
-    global janela_principal, tocador, decodificador, caixa_oitava
+    global janela_principal, tocador, decodificador, caixa_oitava, botao_play
     tocador.parar()
     decodificador.set_bpm_padrao(janela_principal.get_bpm())
     decodificador.set_instrumento_padrao(get_instrument_number(janela_principal.get_instrument()))
@@ -11,7 +11,16 @@ def play():
     decodificador.set_volume_padrao(janela_principal.get_volume())
     texto = janela_principal.get_text()
     sequencia = decodificador.texto_para_sequencia_midi(texto)
-    tocador.tocar(sequencia)
+    tocador.tocar(sequencia, stop)
+    janela_principal.set_button_text(botao_play, "Parar")
+    janela_principal.set_button_commmand(botao_play, stop)    
+
+def stop():
+    global tocador, janela_principal, botao_play
+    tocador.parar()
+    janela_principal.set_button_text(botao_play, "Tocar")
+    janela_principal.set_button_commmand(botao_play, play)  
+
 
 
 INSTRUMENTO_INICIAL = 0
@@ -63,7 +72,7 @@ escala_bpm = janela_principal.create_horizontal_scale_with_label("BPM :", 40, 24
 
 texto = janela_principal.create_text_widget(50, 10, TEXTO_INICIAL, 0, 3, "nwes", 4)
 
-botao_play = janela_principal.create_button("Play", play, 3, 4, "we")
+botao_play = janela_principal.create_button("Tocar", play, 3, 4, "we")
 
 janela_principal.create_text_label(TABELA_CARACTERES_ESQ, 0, 5, 'ne')
 janela_principal.create_text_label(TABELA_FUNCAO_ESQ, 1, 5, 'nw')
