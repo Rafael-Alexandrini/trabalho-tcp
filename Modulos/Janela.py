@@ -14,8 +14,8 @@ class Janela:
         self.__root.option_add('*tearoff', FALSE)
         self.__menubar = Menu(self.__root, tearoff=0)
         self.__root['menu'] = self.__menubar
-        self.__file_menu = Menu(self.__menubar, tearoff=0)
-        self.__menubar.add_cascade(menu=self.__file_menu, label=menu_label)
+        self.__menu = Menu(self.__menubar, tearoff=0)
+        self.__menubar.add_cascade(menu=self.__menu, label=menu_label)
 
         self.__text = Text()
         self.__volume = IntVar()
@@ -37,11 +37,11 @@ class Janela:
             child.grid_configure(padx=padx, pady=pady)
 
     def add_menu_command(self, label: str, command):
-        self.__file_menu.add_command(label=label, command=command)
+        self.__menu.add_command(label=label, command=command)
 
-    def create_text_widget(self, width: int, height: int, initial_text: str, column: int, row: int, sticky: str):
+    def create_text_widget(self, width: int, height: int, initial_text: str, column: int, row: int, sticky: str, colspan: int = 1):
         self.__text = Text(self.__mainframe, width=width, height=height)
-        self.__text.grid(column=column, row=row, sticky=sticky)
+        self.__text.grid(column=column, row=row, sticky=sticky, columnspan=colspan)
         self.__text.insert("1.0", initial_text)
         return self.__text
     
@@ -50,9 +50,15 @@ class Janela:
         button.grid(column=column, row=row, sticky=sticky)
         return button
     
-    def create_text_label(self, text: str, column: int, row: int, sticky: str, font: str = "TkDefaultFont"):
+    def set_button_commmand(self, button: ttk.Button, command):
+        button['command'] = command
+
+    def set_button_text(self, button: ttk.Button, text: str):
+        button['text'] = text
+    
+    def create_text_label(self, text: str, column: int, row: int, sticky: str, font: str = "TkDefaultFont", colspan: int = 1):
         label = ttk.Label(self.__mainframe, text=text, font=font)
-        label.grid(column=column, row=row, sticky=sticky)
+        label.grid(column=column, row=row, sticky=sticky, columnspan=colspan)
         return label
     
     def create_combobox(self, values: tuple, textvariable: StringVar, column: int, row: int, sticky: str):
