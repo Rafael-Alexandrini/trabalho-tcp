@@ -120,6 +120,9 @@ class Janela:
     def get_octave_var(self) -> IntVar:
         return self.__octave
     
+    def get_instrument(self) -> str:
+        return self.__instrument.get()
+    
     def get_instrument_var(self) -> StringVar:
         return self.__instrument
 
