@@ -5,7 +5,9 @@ class Janela:
     def __init__(self, title : str, frame_padding : tuple[int, int, int, int], menu_label : str = 'File'):
         self.__root = Tk()
         self.__root.title(title)
-
+        style = ttk.Style()
+        style.theme_use('clam')  
+        
         self.__mainframe = ttk.Frame(self.__root, padding=frame_padding)
         self.__mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         self.__root.columnconfigure(0, weight=1)

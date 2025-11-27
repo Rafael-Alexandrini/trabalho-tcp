@@ -1,16 +1,18 @@
 from Janela import Janela
 from TocadorMidi import TocadorMidi
 from DecodificadorMidi import DecodificadorMidi
+from tkinter.filedialog import askopenfilename, asksaveasfilename
+from tkinter import Tk
 
 def play():
-    global janela_principal, tocador, decodificador, caixa_oitava
+    global janela_principal, tocador, decodificador, caixa_oitava, texto
     tocador.parar()
     decodificador.set_bpm_padrao(janela_principal.get_intvar_value(bpm))
     decodificador.set_instrumento_padrao(get_instrument_number(janela_principal.get_strvar_string(instrumento)))
     decodificador.set_oitava_padrao(janela_principal.get_combobox_current_index(caixa_oitava))
     decodificador.set_volume_padrao(janela_principal.get_intvar_value(volume))
-    texto = janela_principal.get_text()
-    sequencia = decodificador.texto_para_sequencia_midi(texto)
+    text = janela_principal.get_text(texto)
+    sequencia = decodificador.texto_para_sequencia_midi(text)
     tocador.tocar(sequencia, stop)
     janela_principal.set_button_text(botao_play, "Parar")
     janela_principal.set_button_commmand(botao_play, stop)    
@@ -21,6 +23,34 @@ def stop():
     janela_principal.set_button_text(botao_play, "Tocar")
     janela_principal.set_button_commmand(botao_play, play)  
 
+def salvar_texto():
+        global janela_principal
+        Tk().withdraw()
+
+        save_path = asksaveasfilename(
+            title="Save text file as ...",
+            defaultextension=".txt",
+            filetypes=[("text files", "*.txt")],
+            initialdir="../Salvos/"
+        )
+
+        if save_path:
+            with open(save_path,"w") as f:
+                f.write(janela_principal.get_text(texto))
+
+def carregar_texto():
+    Tk().withdraw()
+
+    load_path = askopenfilename(
+        title="Select a text file ...",
+        defaultextension=".txt",
+        filetypes=[("text files", "*.txt")],
+        initialdir="../Salvos/"
+    )
+
+    if load_path:
+        with open(load_path,"r") as f:
+            janela_principal.set_text(texto, f.read())
 
 INSTRUMENTO_INICIAL = 0
 BPM_INICIAL = 120
@@ -40,8 +70,8 @@ TEXTO_INICIAL = "Escreva o texto aqui..."
 
 TABELA_CARACTERES_ESQ = "A / a\nB / b\nC / c\nD / d\nE / e\nF / f\nG / g\nH / h\n'Espaço'"
 TABELA_FUNCAO_ESQ = "Lá\nSi\nDó\nRé\nMi\nFá\nSol\nSi bemol\nDobra Volume Atual"
-TABELA_CARACTERES_DIR = "OIT+\nOIT-\nOutras vogais\n?\n'Nova linha'\nBPM+\n;"
-TABELA_FUNCAO_DIR = "Aumenta uma oitava\nDiminui uma oitava\nRepete última nota\nNota aleatória\nTroca Instrumento\nAumenta BPM em 80\nPausa / Silêncio"
+TABELA_CARACTERES_DIR = "OIT+\nOIT-\nOutras vogais\n?\n'Nova linha'+ 3 Dígitos\nBPM+\nBPM-\n;"
+TABELA_FUNCAO_DIR = "Aumenta uma oitava\nDiminui uma oitava\nRepete última nota\nNota aleatória\nTroca Instrumento\nAumenta BPM em 20\nDiminui BPM em 20\nPausa / Silêncio"
 
 def get_instrument_number(instrument: str) -> int:
     number = instrument.split(' ')[0]
@@ -49,9 +79,9 @@ def get_instrument_number(instrument: str) -> int:
 
 janela_principal = Janela(TITLE, MAIN_WINDOW_PADDING)
 
-janela_principal.add_menu_command('Save txt', lambda: print('Save txt file'))
+janela_principal.add_menu_command('Save txt', salvar_texto)
 janela_principal.add_menu_command('Save MIDI', lambda: print('Save MIDI file'))
-janela_principal.add_menu_command('Load txt', lambda: print('Load txt file'))
+janela_principal.add_menu_command('Load txt', carregar_texto)
 
 janela_principal.create_text_label("Captain MIDI", 0, 0, 'n', "Arial 20 bold", 4)
 
@@ -64,11 +94,11 @@ instrumento = janela_principal.init_string_var()
 caixa_instrumento = janela_principal.create_combobox(INSTRUMENTOS, instrumento, 1, 2, 'nwe')
 
 volume = janela_principal.init_int_var()
-escala_volume = janela_principal.create_horizontal_scale_with_label("Volume :", 0, 100, 20, volume, 
+escala_volume = janela_principal.create_horizontal_scale_with_label("Volume :", 0, 127, 20, volume, 
                                                                     SCALE_LENGTH, 2, 2, 'nwe')
 
 bpm = janela_principal.init_int_var()
-escala_bpm = janela_principal.create_horizontal_scale_with_label("BPM :", 0, 300, 120, bpm, 
+escala_bpm = janela_principal.create_horizontal_scale_with_label("BPM :", 40, 240, 120, bpm, 
                                                                  SCALE_LENGTH, 3, 2, 'nwe')
 
 texto = janela_principal.create_text_widget(50, 10, TEXTO_INICIAL, 0, 3, "nwes", 4)
