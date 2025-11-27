@@ -1,4 +1,4 @@
-from .SequenciaMidi import SequenciaMidi
+from SequenciaMidi import SequenciaMidi
 from random import choice 
 
 class DecodificadorMidi:
