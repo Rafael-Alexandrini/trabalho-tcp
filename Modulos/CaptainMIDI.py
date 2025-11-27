@@ -82,7 +82,7 @@ TITLE = "Captain MIDI"
 MAIN_WINDOW_PADDING = (3, 3, 12, 12)
 
 OITAVAS = ('0', '1', '2', '3', '4', '5', '6', '7', '8')
-INSTRUMENTOS = ('#000 Acoustic Grand Piano', '#009 Glockenspiel', '#024 Acoustic Guitar', '#40 Violin', '#114 Steel Drums', '#124 Telephone Ring')
+INSTRUMENTOS = ('#000 Acoustic Grand Piano', '#009 Glockenspiel', '#016 Drawbar Organ', '#024 Acoustic Guitar', '#032 Acoustic Bass', '#040 Violin', '#073 Flute', '#088 Pad 1','#114 Steel Drums', '#124 Telephone Ring')
 SCALE_LENGTH = 130
 
 TEXTO_INICIAL = "Escreva o texto aqui..."
