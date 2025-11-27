@@ -94,7 +94,7 @@ instrumento = janela_principal.init_string_var()
 caixa_instrumento = janela_principal.create_combobox(INSTRUMENTOS, instrumento, 1, 2, 'nwe')
 
 volume = janela_principal.init_int_var()
-escala_volume = janela_principal.create_horizontal_scale_with_label("Volume :", 0, 127, 20, volume, 
+escala_volume = janela_principal.create_horizontal_scale_with_label("Volume :", 0, 127, 60, volume, 
                                                                     SCALE_LENGTH, 2, 2, 'nwe')
 
 bpm = janela_principal.init_int_var()
