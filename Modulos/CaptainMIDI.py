@@ -5,13 +5,21 @@ from DecodificadorMidi import DecodificadorMidi
 def play():
     global janela_principal, tocador, decodificador, caixa_oitava
     tocador.parar()
-    decodificador.set_bpm_padrao(janela_principal.get_bpm())
-    decodificador.set_instrumento_padrao(get_instrument_number(janela_principal.get_instrument()))
+    decodificador.set_bpm_padrao(janela_principal.get_intvar_value(bpm))
+    decodificador.set_instrumento_padrao(get_instrument_number(janela_principal.get_strvar_string(instrumento)))
     decodificador.set_oitava_padrao(janela_principal.get_combobox_current_index(caixa_oitava))
-    decodificador.set_volume_padrao(janela_principal.get_volume())
+    decodificador.set_volume_padrao(janela_principal.get_intvar_value(volume))
     texto = janela_principal.get_text()
     sequencia = decodificador.texto_para_sequencia_midi(texto)
-    tocador.tocar(sequencia)
+    tocador.tocar(sequencia, stop)
+    janela_principal.set_button_text(botao_play, "Parar")
+    janela_principal.set_button_commmand(botao_play, stop)    
+
+def stop():
+    global tocador, janela_principal, botao_play
+    tocador.parar()
+    janela_principal.set_button_text(botao_play, "Tocar")
+    janela_principal.set_button_commmand(botao_play, play)  
 
 
 INSTRUMENTO_INICIAL = 0
