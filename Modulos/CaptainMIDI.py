@@ -52,6 +52,25 @@ def carregar_texto():
         with open(load_path,"r") as f:
             janela_principal.set_text(texto, f.read())
 
+def salva_sequencia():
+    tocador.parar()
+    decodificador.set_bpm_padrao(janela_principal.get_intvar_value(bpm))
+    decodificador.set_instrumento_padrao(get_instrument_number(janela_principal.get_strvar_string(instrumento)))
+    decodificador.set_oitava_padrao(janela_principal.get_combobox_current_index(caixa_oitava))
+    decodificador.set_volume_padrao(janela_principal.get_intvar_value(volume))
+    text = janela_principal.get_text(texto)
+    sequencia = decodificador.texto_para_sequencia_midi(text)
+    Tk().withdraw()
+    save_path = asksaveasfilename(
+        title="Save MIDI file as...",
+        defaultextension=".mid",
+        filetypes=[("MIDI files", "*.mid *.midi")],
+        initialdir="../Salvos"
+    )
+    sequencia.salva_midi(save_path)
+
+
+
 INSTRUMENTO_INICIAL = 0
 BPM_INICIAL = 120
 OITAVA_INICIAL = 4
@@ -80,7 +99,7 @@ def get_instrument_number(instrument: str) -> int:
 janela_principal = Janela(TITLE, MAIN_WINDOW_PADDING)
 
 janela_principal.add_menu_command('Save txt', salvar_texto)
-janela_principal.add_menu_command('Save MIDI', lambda: print('Save MIDI file'))
+janela_principal.add_menu_command('Save MIDI', salva_sequencia)
 janela_principal.add_menu_command('Load txt', carregar_texto)
 
 janela_principal.create_text_label("Captain MIDI", 0, 0, 'n', "Arial 20 bold", 4)

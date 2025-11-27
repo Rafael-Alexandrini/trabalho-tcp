@@ -1,4 +1,4 @@
-from typing import Union
+from mido import Message, MidiFile, MidiTrack
 
 class SequenciaMidi:
     def __init__(self) -> None:
@@ -43,4 +43,35 @@ class SequenciaMidi:
             raise ValueError("Timestamps devem ser positivos!")
         if timestamp < self.get_tempo_fim_musica_ms():
             raise ValueError("Timestamps devem estar em ordem!")
-    
+        
+    def salva_midi(self,path):
+        mid = MidiFile()
+        track = MidiTrack()
+        mid.tracks.append(track)
+
+        eventos_convertidos = []
+
+        ultimo_tempo = 0
+        for data, tempo_abs in self._lista_midi:
+            status, d1, d2 = data
+
+            # tempo relativo (delta time)
+            delta = int(round(tempo_abs - ultimo_tempo))
+            ultimo_tempo = tempo_abs
+
+            cmd = status & 0xF0
+
+            if cmd == 0x90 and d2 > 0:
+                tipo = 'note_on'
+                eventos_convertidos.append(Message(tipo, note=d1, velocity=d2, time=delta))
+            elif cmd == 0x90 and d2 == 0:
+                tipo = 'note_off'
+                eventos_convertidos.append(Message(tipo, note=d1, velocity=0, time=delta))
+            elif cmd == 0x80:
+                tipo = 'note_off'
+                eventos_convertidos.append(Message(tipo, note=d1, velocity=d2, time=delta))
+
+        for msg in eventos_convertidos:
+            track.append(msg)
+
+        mid.save(path)
