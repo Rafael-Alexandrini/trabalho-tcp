@@ -105,7 +105,7 @@ janela_principal.add_menu_command('Load txt', carregar_texto)
 janela_principal.create_text_label("Captain MIDI", 0, 0, 'n', "Arial 20 bold", 4)
 
 janela_principal.create_text_label("Oitava:", 0, 1, 'sw')
-oitava = janela_principal.init_int_var()
+oitava = janela_principal.init_string_var()
 caixa_oitava = janela_principal.create_combobox(OITAVAS, oitava, 0, 2, 'nwe', 4)
 
 janela_principal.create_text_label("Instrumento:", 1, 1, 'sw')
