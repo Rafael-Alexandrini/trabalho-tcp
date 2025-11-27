@@ -63,7 +63,7 @@ TITLE = "Captain MIDI"
 MAIN_WINDOW_PADDING = (3, 3, 12, 12)
 
 OITAVAS = ('0', '1', '2', '3', '4', '5', '6', '7', '8')
-INSTRUMENTOS = ('#000 Acoustic Grand Piano', '#009 Glockenspiel', '#024 Acoustic Guitar', '#40 Violin', '#40 Violin', '#114 Steel Drums', '#124 Telephone Ring')
+INSTRUMENTOS = ('#000 Acoustic Grand Piano', '#009 Glockenspiel', '#024 Acoustic Guitar', '#40 Violin', '#114 Steel Drums', '#124 Telephone Ring')
 SCALE_LENGTH = 130
 
 TEXTO_INICIAL = "Escreva o texto aqui..."
@@ -87,14 +87,14 @@ janela_principal.create_text_label("Captain MIDI", 0, 0, 'n', "Arial 20 bold", 4
 
 janela_principal.create_text_label("Oitava:", 0, 1, 'sw')
 oitava = janela_principal.init_int_var()
-caixa_oitava = janela_principal.create_combobox(OITAVAS, oitava, 0, 2, 'nwe')
+caixa_oitava = janela_principal.create_combobox(OITAVAS, oitava, 0, 2, 'nwe', 4)
 
 janela_principal.create_text_label("Instrumento:", 1, 1, 'sw')
 instrumento = janela_principal.init_string_var()
 caixa_instrumento = janela_principal.create_combobox(INSTRUMENTOS, instrumento, 1, 2, 'nwe')
 
 volume = janela_principal.init_int_var()
-escala_volume = janela_principal.create_horizontal_scale_with_label("Volume :", 0, 127, 60, volume, 
+escala_volume = janela_principal.create_horizontal_scale_with_label("Volume :", 0, 127, 100, volume, 
                                                                     SCALE_LENGTH, 2, 2, 'nwe')
 
 bpm = janela_principal.init_int_var()
