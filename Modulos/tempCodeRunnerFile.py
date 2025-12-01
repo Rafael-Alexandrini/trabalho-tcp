@@ -1,1 +1,1 @@
-file
+    Tk().withdraw()

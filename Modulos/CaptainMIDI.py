@@ -25,8 +25,6 @@ def stop():
 
 def salvar_texto():
         global janela_principal
-        Tk().withdraw()
-
         save_path = asksaveasfilename(
             title="Save text file as ...",
             defaultextension=".txt",
@@ -39,8 +37,6 @@ def salvar_texto():
                 f.write(janela_principal.get_text(texto))
 
 def carregar_texto():
-    Tk().withdraw()
-
     load_path = askopenfilename(
         title="Select a text file ...",
         defaultextension=".txt",
@@ -60,7 +56,6 @@ def salva_sequencia():
     decodificador.set_volume_padrao(janela_principal.get_intvar_value(volume))
     text = janela_principal.get_text(texto)
     sequencia = decodificador.texto_para_sequencia_midi(text)
-    Tk().withdraw()
     save_path = asksaveasfilename(
         title="Save MIDI file as...",
         defaultextension=".mid",
